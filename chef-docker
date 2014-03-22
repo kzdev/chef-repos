@@ -1,0 +1,75 @@
+#!/bin/bash
+
+IMAGE=$1
+shift
+ARGS=$@
+EXTRA_ARGS=""
+
+if [[ "$ARGS" == "" ]]; then
+    cat <<EOM
+= Usage: $0 <Docker Image> <knife-solo cook args>
+
+= Environment variables
+
+    DOCKER_PORT:  Docker container SSH port (default: 8022)
+    SSH_IP     :  knife-solo ssh IP         (default: 127.0.0.1)
+    SSH_USER   :  knife-solo ssh user       (default: kzdev)
+    SSH_KEY    :  knife-solo ssh key        (optional)
+
+= Environment file
+
+    if ~/.chef-docker-env exists, evaluated automatically.
+    ~/.chef-docker-env must be a shell script.
+
+= To See knife solo cook help
+
+    bundle exec knife solo cook --help
+
+EOM
+    exit
+fi
+
+CHEF_DOCKER_ENV_FILE=${CHEF_DOCKER_ENV_FILE:-~/.chef-docker-env}
+
+cd $(dirname $0)/..
+
+if [[ -e $CHEF_DOCKER_ENV_FILE ]]; then
+    . $CHEF_DOCKER_ENV_FILE
+fi
+
+DOCKER_PORT=${DOCKER_PORT:-8022}
+SSH_IP=${SSH_IP:-127.0.0.1}
+SSH_USER=${SSH_USER:-kzdev}
+
+if [[ "$SSH_KEY" != "" ]]; then
+    EXTRA_ARGS="-i ${SSH_KEY} ${EXTRA_ARGS}"
+fi
+
+
+NEW_IMAGE=last
+
+echo docker run -d -p ${DOCKER_PORT}:22 ${IMAGE} /usr/sbin/sshd -D
+DID=$(docker run -d -p ${DOCKER_PORT}:22 ${IMAGE} /usr/sbin/sshd -D)
+
+if [[ $? == 0 ]]; then
+    rm nodes/*.json 2>&1 >/dev/null
+
+    echo bundle exec knife solo cook ${SSH_USER}@${SSH_IP} -p ${DOCKER_PORT} --no-berkshelf $EXTRA_ARGS $ARGS
+    bundle exec knife solo cook ${SSH_USER}@${SSH_IP} -p ${DOCKER_PORT} --no-berkshelf $EXTRA_ARGS $ARGS
+
+    echo docker stop $DID
+    docker stop $DID > /dev/null
+    (docker images | grep ${NEW_IMAGE} && docker rmi ${NEW_IMAGE}) 2>&1 > /dev/null
+    docker commit $DID ${NEW_IMAGE} > /dev/null
+
+    cat <<EOM
+Finish Successfully!
+If you want to login the chef configured image,
+
+docker run -t -i ${NEW_IMAGE} /bin/bash
+
+EOM
+
+else
+    echo docker run fail.
+fi
