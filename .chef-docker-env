@@ -1,2 +1,2 @@
 export SSH_IP=192.168.56.100
-export SSH_KEY=~/.ssh/docker/id_rsa
+export SSH_KEY=~/.ssh/docker/id-rsa

@@ -1,0 +1,10 @@
+site :opscode
+
+cookbook 'yum-epel'
+cookbook 'yum'
+cookbook 'rbenv', git: 'git://github.com/RiotGames/rbenv-cookbook.git'
+cookbook 'passenger_apache2'
+cookbook 'newrelic'
+cookbook 'vim'
+cookbook 'nodejs'
+cookbook 'phantomjs'

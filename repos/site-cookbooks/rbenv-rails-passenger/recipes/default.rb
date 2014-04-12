@@ -1,9 +1,10 @@
 #
-# Cookbook Name:: hello
+# Cookbook Name:: rbenv-rails-passenger
 # Recipe:: default
 #
 # Copyright 2014, YOUR_COMPANY_NAME
 #
 # All rights reserved - Do Not Redistribute
 #
-log "Hello world"
+
+# user management

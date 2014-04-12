@@ -1,0 +1,28 @@
+{
+	"newrelic":{
+		"server_monitoring": {
+			"license":"bb19938203694e921bea631f283e2592dd02b03b"
+		},
+		"application_monitoring":{
+			"license":"bb19938203694e921bea631f283e2592dd02b03b"
+		}
+	},
+	"vim":{
+		"install_method": "source"
+	},
+	"base": {
+		"fqdn" : "vagrant.kzdev.info",
+		"name" : "vagrant01"
+	},
+	"run_list":[
+		"recipe[vim]",
+		"recipe[phantomjs]",
+		"recipe[nodejs]",
+		"recipe[postgres]",
+		"recipe[rbenv-rails-passenger::commentout_yumconfg_exclude_kernel]",
+		"recipe[rbenv-rails-passenger::rbenv]",
+		"recipe[rbenv-rails-passenger::rails]",
+		"recipe[base]",
+		"recipe[rbenv-rails-passenger::passenger]"
+	]
+}

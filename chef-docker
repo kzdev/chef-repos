@@ -45,7 +45,6 @@ if [[ "$SSH_KEY" != "" ]]; then
     EXTRA_ARGS="-i ${SSH_KEY} ${EXTRA_ARGS}"
 fi
 
-
 NEW_IMAGE=last
 
 echo docker run -d -p ${DOCKER_PORT}:22 ${IMAGE} /usr/sbin/sshd -D
@@ -54,8 +53,8 @@ DID=$(docker run -d -p ${DOCKER_PORT}:22 ${IMAGE} /usr/sbin/sshd -D)
 if [[ $? == 0 ]]; then
     rm nodes/*.json 2>&1 >/dev/null
 
-    echo bundle exec knife solo cook ${SSH_USER}@${SSH_IP} -p ${DOCKER_PORT} --no-berkshelf $EXTRA_ARGS $ARGS
-    bundle exec knife solo cook ${SSH_USER}@${SSH_IP} -p ${DOCKER_PORT} --no-berkshelf $EXTRA_ARGS $ARGS
+    echo knife solo cook ${SSH_USER}@${SSH_IP} -p ${DOCKER_PORT} --no-berkshelf $EXTRA_ARGS $ARGS
+    knife solo cook ${SSH_USER}@${SSH_IP} -p ${DOCKER_PORT} --no-berkshelf $EXTRA_ARGS $ARGS
 
     echo docker stop $DID
     docker stop $DID > /dev/null
