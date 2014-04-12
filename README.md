@@ -1,6 +1,39 @@
 ## My Chef Repository
 ==================
 
+### install list
+
+以下の項目を自動設定
+
+**base**  
+
+* /etc/sysconfig/network
+* /etc/hosts
+* selinux無効化
+* yumを日本ドメインに制限
+* timezoneを日本時間(JST)に指定
+* /etc/sysconfig/i18nをja_JP.utf8に指定
+* iptables設定
+* yum -y update
+* ユーザ追加
+* yum -y groupinstall "Japanese Support"
+
+**package**  
+
+* httpd
+* vsftpd
+* git
+* wget
+* rbenv
+* ruby 2.1.1
+* gem 2.2.2
+* nodejs
+* phantomjs
+* postgresql9.1 (rpm版)
+* vim 7.4
+* newrelic (要licence)
+
+
 ### Prepared
   
 Chefを実行する下準備  
